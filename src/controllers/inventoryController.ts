@@ -1,8 +1,8 @@
-import type { Response } from "express";
+import type { Request, Response } from "express";
 import { Item } from "../models/item.js";
 import { calculateInventory } from "../services/inventoryServices.js";
 
-export const getInventoryReport = async (req, res) => {
+export const getInventoryReport = async (req: Request, res: Response) => {
   const items = await Item.find();
   const report = [];
 
