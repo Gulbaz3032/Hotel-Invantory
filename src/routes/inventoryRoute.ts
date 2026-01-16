@@ -5,6 +5,7 @@ import {
   getInventoryReport,
   useStock
 } from "../controllers/inventoryController.js";
+import { getDailyReports } from "../controllers/dailyReportController.js";
 
 const router = Router();
 
@@ -13,5 +14,9 @@ router.post("/item", createItem);
 router.post("/add", addStock);
 router.post("/use", useStock);
 router.get("/report", getInventoryReport);
+
+// Daily reports
+
+router.get("/daily-usages", getDailyReports)
 
 export default router;
