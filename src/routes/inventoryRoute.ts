@@ -6,6 +6,7 @@ import {
   useStock
 } from "../controllers/inventoryController.js";
 import { getDailyReports } from "../controllers/dailyReportController.js";
+import { getMonthlyUsageReport } from "../controllers/monthlyReportController.js";
 
 const router = Router();
 
@@ -18,5 +19,6 @@ router.get("/report", getInventoryReport);
 // Daily reports
 
 router.get("/daily-usages", getDailyReports)
+router.get("/monthly-usage", getMonthlyUsageReport);
 
 export default router;
