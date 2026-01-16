@@ -1,15 +1,18 @@
 import express from "express";
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 import { dbConn } from "./config/db.js";
+import router from "./routes/inventoryRoute.js";
+
 dotenv.config();
 
-const port = process.env.PORT
-
 const app = express();
+const port = process.env.PORT;
 
 app.use(express.json());
-dbConn()
+dbConn();
+
+app.use("/api/hotel", router);
 
 app.listen(port, () => {
-    console.log(`Your Port is running on ${port}`)
+  console.log(`Your Port is running on ${port}`);
 });

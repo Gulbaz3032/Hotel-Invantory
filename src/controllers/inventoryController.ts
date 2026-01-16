@@ -31,6 +31,31 @@ export const useStock = async (req: Request, res: Response) => {
   })
 }
 
+export const createItem = async (req: Request, res: Response) => {
+  try {
+    const { name, unit, minStockLevel } = req.body;
+
+    if (!name || !unit || minStockLevel === undefined) {
+      return res.status(400).json({
+        message: "name, unit, and minStockLevel are required"
+      });
+    }
+
+    const item = await Item.create({
+      name,
+      unit,
+      minStockLevel
+    });
+
+    res.status(201).json(item);
+  } catch (error: any) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
+
+
 
 export const getInventoryReport = async (req: Request, res: Response) => {
   const items = await Item.find();
