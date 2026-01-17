@@ -1,3 +1,4 @@
+import type { Request, Response } from "express";
 import { StockTransaction } from "../models/stockTransactionModel.js"
 
 export const calculateInventory = async (itemId: string) => {
@@ -15,5 +16,14 @@ export const calculateInventory = async (itemId: string) => {
         totalIn,
         totalOut,
          remaining: totalIn - totalOut
+    }
+}
+
+
+export const showCalculaterInventory = async (req: Request, res: Response) => {
+    try {
+
+    } cathch (error) {
+        console.log("failed to show");
     }
 }
