@@ -22,8 +22,20 @@ export const calculateInventory = async (itemId: string) => {
 
 export const showCalculaterInventory = async (req: Request, res: Response) => {
     try {
+        const { id } = req.params;
+        if(!id) {
+            return res.status(404).json({
+                message: "Id not found",
+                success: false
+            })
+        }
 
-    } cathch (error) {
+        
+    } catch (error: error) {
         console.log("failed to show");
+        return res.status(200).json({
+            message: "Faile to get the show inventor",
+            success: false
+        })
     }
 }
