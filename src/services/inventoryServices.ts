@@ -30,7 +30,19 @@ export const showCalculaterInventory = async (req: Request, res: Response) => {
             })
         }
 
-        
+        const user = await StockTransaction.findById(id);
+        if(!user) {
+            return res.status(404).json({
+                message: "user not found",
+                success: false
+            })
+        }
+
+        return res.status(200).json({
+            message: "get successfully",
+            user: user
+        })
+
     } catch (error: error) {
         console.log("failed to show");
         return res.status(200).json({
