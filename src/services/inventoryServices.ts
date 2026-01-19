@@ -43,7 +43,7 @@ export const showCalculaterInventory = async (req: Request, res: Response) => {
             user: user
         })
 
-    } catch (error: error) {
+    } catch (error) {
         console.log("failed to show");
         return res.status(200).json({
             message: "Faile to get the show inventor",

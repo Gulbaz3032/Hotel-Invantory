@@ -175,3 +175,91 @@ export const getInventoryReport = async (req: Request, res: Response) => {
   }
 };
 
+//   update items
+
+export const updateItem = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { name, unit, minStockLevel, categoryId } = req.body;
+
+    if (!id) {
+      return res.status(400).json({
+        message: "Invalid item id"
+      });
+    }
+
+    // Check if item exists
+    const item = await Item.findById(id);
+    if (!item) {
+      return res.status(404).json({
+        message: "Item not found"
+      });
+    }
+
+    // If categoryId is being updated, validate it
+    if (categoryId) {
+      const categoryExists = await Category.findById(categoryId);
+      if (!categoryExists) {
+        return res.status(404).json({
+          message: "Category not found"
+        });
+      }
+      item.category = categoryId;
+    }
+
+    // Update fields if provided
+    if (name) item.name = name;
+    if (unit) item.unit = unit;
+    if (minStockLevel !== undefined) item.minStockLevel = minStockLevel;
+
+    const updatedItem = await item.save();
+
+    return res.status(200).json(updatedItem);
+
+  } catch (error: any) {
+    if (error.code === 11000) {
+      return res.status(400).json({
+        message: "Item with this name already exists"
+      });
+    }
+
+    return res.status(500).json({
+      message: "Failed to update item",
+      error: error.message
+    });
+  }
+};
+
+//        Delete items   
+
+export const deleteItem = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({
+        message: "Invalid item id"
+      });
+    }
+
+    const item = await Item.findByIdAndDelete(id);
+
+    if (!item) {
+      return res.status(404).json({
+        message: "Item not found"
+      });
+    }
+
+    return res.status(200).json({
+      message: "Item deleted successfully"
+    });
+
+  } catch (error: any) {
+    return res.status(500).json({
+      message: "Failed to delete item",
+      error: error.message
+    });
+  }
+};
+
+
