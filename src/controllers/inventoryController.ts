@@ -34,7 +34,8 @@ export const createItem = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Item with this name already exists" });
     }
     res.status(500).json({
-      message: error.message
+      message: "Failed to create Item, Server error",
+      error: error.message
     });
   }
 };
@@ -44,7 +45,7 @@ export const getItems = async (req: Request, res: Response) => {
     const items = await Item.find({ isActive: true }).populate('category', 'name');
     res.status(200).json(items);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Failed to get items, server error", error : error.message });
   }
 }
 
@@ -88,7 +89,7 @@ export const addStock = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     await session.abortTransaction();
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Failed to add stock, server error", error: error.message });
   } finally {
     session.endSession();
   }
@@ -149,7 +150,7 @@ export const useStock = async (req: Request, res: Response) => {
 
   } catch (error: any) {
     await session.abortTransaction();
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "failed to use stock, Server error", error: error.message });
   } finally {
     session.endSession();
   }
@@ -171,7 +172,7 @@ export const getInventoryReport = async (req: Request, res: Response) => {
     }));
     res.json(report);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Failed to get inventory reports, Server error", error: error.message });
   }
 };
 
@@ -219,7 +220,8 @@ export const updateItem = async (req: Request, res: Response) => {
   } catch (error: any) {
     if (error.code === 11000) {
       return res.status(400).json({
-        message: "Item with this name already exists"
+        message: "Item with this name already exists",
+        success: false
       });
     }
 
@@ -256,7 +258,7 @@ export const deleteItem = async (req: Request, res: Response) => {
 
   } catch (error: any) {
     return res.status(500).json({
-      message: "Failed to delete item",
+      message: "Failed to delete item, Server error",
       error: error.message
     });
   }

@@ -17,7 +17,10 @@ export const createCategory = async (req: Request, res: Response) => {
         if (error.code === 11000) {
             return res.status(400).json({ message: "Category already exists" });
         }
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Failed to create category server error",
+            error: error.message
+
+         });
     }
 };
 
@@ -27,7 +30,7 @@ export const getCategories = async (req: Request, res: Response) => {
         const categories = await Category.find({ isActive: true });
         res.status(200).json(categories);
     } catch (error: any) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Failed to get Catageries, Server errro", error: error.message });
     }
 };
 
@@ -49,7 +52,7 @@ export const updateCategory = async (req: Request, res: Response) => {
 
         res.status(200).json({ message: "Category updated", category });
     } catch (error: any) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Failed to update category, Server error", error: error.message });
     }
 };
 
@@ -59,12 +62,12 @@ export const deleteCategory = async (req: Request, res: Response) => {
         const { id } = req.params;
 
         // Check if items exist in this category
-        const itemsExist = await Item.exists({ category: id });
-        if (itemsExist) {
-            return res.status(400).json({
-                message: "Cannot delete category. Items are assigned to it."
-            });
-        }
+        // const itemsExist = await Item.exists({ category: id });
+        // if (itemsExist) {
+        //     return res.status(400).json({
+        //         message: "Cannot delete category. Items are assigned to it."
+        //     });
+        // }
 
         const category = await Category.findByIdAndDelete(id);
 
@@ -74,6 +77,6 @@ export const deleteCategory = async (req: Request, res: Response) => {
 
         res.status(200).json({ message: "Category deleted successfully" });
     } catch (error: any) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Faied to Delete category, server error", error: error.message });
     }
 };

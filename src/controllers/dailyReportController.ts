@@ -43,7 +43,8 @@ export const getDailyReports = async (req: Request, res: Response) => {
     }
     ]);
     res.status(200).json({
-        message: "Successfully s",
+        message: "Successfully get te reprots",
+        success: true
         report: report
     });
 }
