@@ -14,7 +14,7 @@ const getDateRange = (type: 'daily' | 'weekly' | 'monthly') => {
         end.setHours(23, 59, 59, 999);
     } else if (type === 'weekly') {
         const day = now.getDay();
-        const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is sunday
+        const diff = now.getDate() - day + (day === 0 ? -6 : 1);
         start.setDate(diff);
         start.setHours(0, 0, 0, 0);
         end.setHours(23, 59, 59, 999);

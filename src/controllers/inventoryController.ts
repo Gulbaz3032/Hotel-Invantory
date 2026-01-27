@@ -42,15 +42,55 @@ export const createItem = async (req: Request, res: Response) => {
 
 export const getItems = async (req: Request, res: Response) => {
   try {
-    const items = await Item.find({ isActive: true }).populate('category', 'name');
-    res.status(200).json(items);
+    const { page = 1, limit = 10, search, category, minStockLevel, sortBy = "createdAt", sortOrder = "desc", status } = req.query;
+
+    const pageNumber = parseInt(page as string);
+    const limitNumber = parseInt(limit as string);
+    const skip = (pageNumber - 1) * limitNumber;
+
+    // Build Query
+    const query: any = { isActive: true };
+
+    if (search) {
+      query.name = { $regex: search, $options: "i" };
+    }
+
+    if (category) {
+      query.category = category;
+    }
+
+    if (minStockLevel === 'low') {
+      query.$expr = { $lte: ["$currentStock", "$minStockLevel"] };
+    }
+
+
+    const sort: any = {};
+    if (sortBy) {
+      sort[sortBy as string] = sortOrder === "asc" ? 1 : -1;
+    }
+
+
+    const [items, total] = await Promise.all([
+      Item.find(query)
+        .populate('category', 'name')
+        .sort(sort)
+        .skip(skip)
+        .limit(limitNumber),
+      Item.countDocuments(query)
+    ]);
+
+    res.status(200).json({
+      items,
+      currentPage: pageNumber,
+      totalPages: Math.ceil(total / limitNumber),
+      totalItems: total
+    });
   } catch (error: any) {
-    res.status(500).json({ message: "Failed to get items, server error", error : error.message });
+    res.status(500).json({ message: "Failed to get items, server error", error: error.message });
   }
 }
 
 
-// --- Stock Transactions ---
 
 export const addStock = async (req: Request, res: Response) => {
   const session = await mongoose.startSession();
