@@ -17,20 +17,44 @@ export const createCategory = async (req: Request, res: Response) => {
         if (error.code === 11000) {
             return res.status(400).json({ message: "Category already exists" });
         }
-        res.status(500).json({ message: "Failed to create category server error",
+        res.status(500).json({
+            message: "Failed to create category server error",
             error: error.message
 
-         });
+        });
     }
 };
 
-// Get all categories
+// Get all categories with pagination and search
 export const getCategories = async (req: Request, res: Response) => {
     try {
-        const categories = await Category.find({ isActive: true });
-        res.status(200).json(categories);
+        const { page = 1, limit = 10, search } = req.query;
+
+        const pageNumber = parseInt(page as string);
+        const limitNumber = parseInt(limit as string);
+        const skip = (pageNumber - 1) * limitNumber;
+
+        const query: any = { isActive: true };
+
+        if (search) {
+            query.name = { $regex: search, $options: "i" };
+        }
+
+        const [categories, total] = await Promise.all([
+            Category.find(query)
+                .skip(skip)
+                .limit(limitNumber),
+            Category.countDocuments(query)
+        ]);
+
+        res.status(200).json({
+            categories,
+            currentPage: pageNumber,
+            totalPages: Math.ceil(total / limitNumber),
+            totalCategories: total
+        });
     } catch (error: any) {
-        res.status(500).json({ message: "Failed to get Catageries, Server errro", error: error.message });
+        res.status(500).json({ message: "Failed to get Categories, Server error", error: error.message });
     }
 };
 
